@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-const moment = require("moment");
+// const moment = require("moment");
 
 const reactionSchema = new Schema(
   {
@@ -20,7 +20,7 @@ const reactionSchema = new Schema(
       type: Date,
       default: Date.now,
       get: (timestamp) => {
-        return new Date(timestamp).toLocaleString;
+        return new Date(timestamp).toLocaleString();
       },
     },
   },
@@ -45,7 +45,7 @@ const thoughtSchema = new Schema(
       type: Date,
       default: Date.now,
       get: (timestamp) => {
-        return new Date(timestamp).toLocaleString;
+        return new Date(timestamp).toLocaleString();
       },
     },
     username: {

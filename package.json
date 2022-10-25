@@ -1,0 +1,19 @@
+{
+  "name": "social_network_api_w18",
+  "version": "1.0.0",
+  "description": "## Your Task",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Leximiller128/social_network_api_w18.git"
+  },
+  "author": "Lexi Miller",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Leximiller128/social_network_api_w18/issues"
+  },
+  "homepage": "https://github.com/Leximiller128/social_network_api_w18#readme"
+}
