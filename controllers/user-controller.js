@@ -42,8 +42,19 @@ module.exports = {
   updateUser(req, res) {
     User.findOneAndUpdate(
       { _id: req.params.userid },
-      { $set: req.body },
-      { runValidators: true, new: true }
+      req.body,
+      {
+        returnOriginal: false,
+      },
+      (err, result) => {
+        if (result) {
+          res.status(200).json(result);
+          console.log("Updated");
+        } else {
+          console.log("Was not able to update");
+          res.status(500).json({ message: "unable to update" });
+        }
+      }
     )
       .then((user) =>
         !user
