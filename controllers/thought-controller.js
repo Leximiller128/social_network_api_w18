@@ -1,10 +1,11 @@
+const { response } = require("express");
 const { User, Thought } = require("../models");
 
 module.exports = {
   // Get all Thoughts
   getAllThoughts(req, res) {
     Thought.find()
-      .then((users) => res.json(users))
+      .then((thoughts) => res.json(thoughts))
       .catch((err) => res.status(500).json(err));
   },
   // Get a Thought
@@ -30,15 +31,21 @@ module.exports = {
 
   // Delete a thought
   deleteThought(req, res) {
-    Thought.findOneAndDelete({ _id: req.params.thoughtd })
+    Thought.findOneAndRemove({ _id: req.params.thoughtId })
       .then((thought) => {
         console.log(thought);
         return User.findOneAndUpdate(
-          { username: thought.username },
-          { $pull: { thoughts: thought.id } }
+          { thoughts: req.params.thoughtId },
+          { $pull: { thoughts: thought.id } },
+          { new: true }
         );
       })
-      .then(() => res.json({ message: "Thought deleted" }))
+      .then((user) => {
+        if (!user)
+          response.status(404).json({ msg: "no user found with that thought" });
+        res.json({ msg: "Thought deleted" });
+      })
+
       .catch((err) => res.status(500).json(err));
   },
 
@@ -73,7 +80,7 @@ module.exports = {
     )
       .then((dbThoughtData) => {
         if (!dbThoughtData) {
-          return res.status(404).json({ message: "No user with this ID!" });
+          return res.status(404).json({ message: "No thought with this ID!" });
         }
         res.json(dbThoughtData);
       })
@@ -87,12 +94,12 @@ module.exports = {
   deleteReaction(req, res) {
     Thought.findOneAndUpdate(
       { _id: req.params.thoughtId },
-      { $pull: { reactions: { reactionId: req.params.reactionID } } },
+      { $pull: { reactions: { reactionId: req.params.reactionId } } },
       { runValidators: true, new: true }
     )
       .then((dbThoughtData) => {
         if (!dbThoughtData) {
-          return res.status(404).json({ message: "No user with this ID!" });
+          return res.status(404).json({ message: "No thought with this ID!" });
         }
         res.json(dbThoughtData);
       })

@@ -62,10 +62,12 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
   },
+
+  // add friend
   addFriend(req, res) {
     User.findOneAndUpdate(
       { _id: req.params.userId },
-      { $addToSet: { friends: params.friendId } },
+      { $addToSet: { friends: req.params.friendId } },
       { new: true }
     )
       .then((dbUserData) => {

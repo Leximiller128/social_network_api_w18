@@ -31,7 +31,6 @@ const reactionSchema = new Schema(
     id: false,
   }
 );
-module.exports = reactionSchema;
 
 const thoughtSchema = new Schema(
   {
