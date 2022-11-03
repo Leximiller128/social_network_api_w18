@@ -1,15 +1,15 @@
 const { User, Thought } = require("../models");
 
 module.exports = {
-    // Get all Thoughts
-    getAllThoughts(req, res) {
-      Thought.find()
-        .then((users) => res.json(users))
-        .catch((err) => res.status(500).json(err));
-    },
-      // Get a Thought
+  // Get all Thoughts
+  getAllThoughts(req, res) {
+    Thought.find()
+      .then((users) => res.json(users))
+      .catch((err) => res.status(500).json(err));
+  },
+  // Get a Thought
   getThought(req, res) {
-    Thought.findOne({ _id: req.params.userid })
+    Thought.findOne({ _id: req.params.userId })
       .select("-__v")
       .then((thought) =>
         !thought
@@ -27,29 +27,78 @@ module.exports = {
         return res.status(500).json(err);
       });
   },
+
+  // Delete a thought
+  deleteThought(req, res) {
+    Thought.findOneAndDelete({ _id: req.params.thoughtd })
+      .then((thought) => {
+        console.log(thought);
+        return User.findOneAndUpdate(
+          { username: thought.username },
+          { $pull: { thoughts: thought.id } }
+        );
+      })
+      .then(() => res.json({ message: "Thought deleted" }))
+      .catch((err) => res.status(500).json(err));
+  },
+
   // Update a thought
-//   updateThought(req, res) {
-//     Thought.findOneAndUpdate(
-//       { _id: req.params.userid },
-//       req.body,
-//       {
-//         returnOriginal: false,
-//       },
-//       (err, result) => {
-//         if (result) {
-//           res.status(200).json(result);
-//           console.log("Updated");
-//         } else {
-//           console.log("Was not able to update");
-//           res.status(500).json({ message: "unable to update" });
-//         }
-//       }
-//     ),
-// .then((user) =>
-// !user
-//   ? res.status(404).json({ message: "No user with this id!" })
-//   : res.json(user)
-// )
-// .catch((err) => res.status(500).json(err));
-// },
-// };
+  updateThought(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $set: req.body },
+      {
+        new: true,
+        runValidators: true,
+      }
+    )
+      .then((dbThoughtData) => {
+        if (!dbThoughtData) {
+          return res
+            .status(404)
+            .json({ message: "No user with this particular id" });
+        }
+        res.json(dbThoughtData);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  },
+  addReaction(req, res) {
+    Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $addToSet: { reactions: req.body } },
+      { runValidators: true, new: true }
+    )
+      .then((dbThoughtData) => {
+        if (!dbThoughtData) {
+          return res.status(404).json({ message: "No user with this ID!" });
+        }
+        res.json(dbThoughtData);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  },
+
+  // Delete reaction
+  deleteReaction(req, res) {
+    Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $pull: { reactions: { reactionId: req.params.reactionID } } },
+      { runValidators: true, new: true }
+    )
+      .then((dbThoughtData) => {
+        if (!dbThoughtData) {
+          return res.status(404).json({ message: "No user with this ID!" });
+        }
+        res.json(dbThoughtData);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  },
+};
