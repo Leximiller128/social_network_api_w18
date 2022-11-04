@@ -18,8 +18,6 @@ This app is intended for use in a social networking application. It can be used 
 
 Video example- https://youtu.be/QvPlMYB0kW0
 
-<iframe src="https://youtu.be/QvPlMYB0kW0" width="640" height="480"></iframe>
-
 ## Licenses
 
 MIT
